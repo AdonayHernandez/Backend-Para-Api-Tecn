@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Provider {
+  id          Int       @id @default(autoincrement())
+  name        String
+  address     String?
+  phone       String?
+  description String?
+  email       String?
+  status      String?   @default("active")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  products    Product[]
+
+  @@map("providers")
+}
+
+model Product {
+  id            Int       @id @default(autoincrement())
+  name          String
+  price         Float
+  description   String?
+  sku           String?
+  stockQuantity Int?      @default(0) @map("stock_quantity")
+  category      String?
+  imageUrl      String?   @map("image_url")
+  isActive      Boolean?  @default(true) @map("is_active")
+  weight        Float?
+  dimensions    String?
+  providerId    Int       @map("provider_id")
+  provider      Provider  @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@map("products")
+}
